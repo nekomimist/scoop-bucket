@@ -1,0 +1,25 @@
+name: Update manifests
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 */4 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-manifests
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Update from upstream releases
+        uses: ScoopInstaller/GithubActions@5bceeda181721d9d10a18fdcc3ddca6f33467ae6 # v3.0.0
+        env:
+          SKIP_UPDATED: 1
+          THROW_ERROR: 1

@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    strategy:
+      matrix:
+        shell: [powershell, pwsh]
+    defaults:
+      run:
+        shell: ${{ matrix.shell }}
+    steps:
+      - name: Check out bucket
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: bucket-repo
+          persist-credentials: false
+      - name: Check out Scoop
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ScoopInstaller/Scoop
+          path: scoop-core
+          persist-credentials: false
+      - name: Install test dependencies
+        uses: potatoqualitee/psmodulecache@9e4b63833c22c1768d648e115a9c849afdda22a5 # v6.3
+        with:
+          modules-to-cache: BuildHelpers, Pester
+          shell: ${{ matrix.shell }}
+      - name: Validate all manifests
+        run: |
+          $env:SCOOP_HOME = (Resolve-Path '.\scoop-core').Path
+          # Always validate the complete bucket, including its first commit.
+          $env:CI = 'false'
+          .\bucket-repo\bin\test.ps1
