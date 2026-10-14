@@ -49,7 +49,8 @@ scoop install nekomimist/nskkzime
 Scoop installs PowerShell 7 and the x64 and x86 Visual C++ runtimes as dependencies.
 Approve UAC as the same user. The IME is registered machine-wide and its binaries
 are copied to protected version directories under `%ProgramFiles%\nskkzime`.
-Scoop also retains the downloaded package. Use one managing user; global Scoop
+Scoop also retains the downloaded package under `package/`, separately from its
+own installation metadata. Use one managing user; global Scoop
 installation is unsupported. ARM64 Windows is unsupported.
 
 Open **nskkzime Settings** in the **Scoop Apps** Start menu folder and configure

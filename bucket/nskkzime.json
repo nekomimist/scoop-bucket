@@ -9,32 +9,33 @@
             "hash": "6bc1e32d4bd643badb02047a2b5cdd9aeb382e124c4c3ae7e8180abc6b8402e3"
         }
     },
+    "extract_to": "package",
     "depends": [
         "main/pwsh",
         "extras/vcredist2022"
     ],
     "pre_install": "if ($global) { abort 'Use a per-user Scoop installation; nskkzime manages the machine-wide IME registration for one managing user.' }",
     "installer": {
-        "script": "try { & \"$dir\\tools\\scoop.ps1\" -Action Install -PackageDirectory $dir -PowerShellPath \"$(appdir pwsh)\\current\\pwsh.exe\" } catch { abort $_.Exception.Message }"
+        "script": "try { & \"$dir\\package\\tools\\scoop.ps1\" -Action Install -PackageDirectory \"$dir\\package\" -PowerShellPath \"$(appdir pwsh)\\current\\pwsh.exe\" } catch { abort $_.Exception.Message }"
     },
     "uninstaller": {
         "script": [
             "if ($cmd -eq 'uninstall') {",
-            "    try { & \"$dir\\tools\\scoop.ps1\" -Action Unregister -PackageDirectory $dir -PowerShellPath \"$(appdir pwsh)\\current\\pwsh.exe\" } catch { abort $_.Exception.Message }",
+            "    try { & \"$dir\\package\\tools\\scoop.ps1\" -Action Unregister -PackageDirectory \"$dir\\package\" -PowerShellPath \"$(appdir pwsh)\\current\\pwsh.exe\" } catch { abort $_.Exception.Message }",
             "}"
         ]
     },
     "bin": [
-        "bin\\nskkzime_config.exe",
-        "bin\\nskkzime_user_dictionary.exe"
+        "package\\bin\\nskkzime_config.exe",
+        "package\\bin\\nskkzime_user_dictionary.exe"
     ],
     "shortcuts": [
         [
-            "bin\\nskkzime_settings.exe",
+            "package\\bin\\nskkzime_settings.exe",
             "nskkzime Settings"
         ],
         [
-            "bin\\nskkzime_dictionary_gui.exe",
+            "package\\bin\\nskkzime_dictionary_gui.exe",
             "nskkzime User Dictionary"
         ]
     ],
