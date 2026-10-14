@@ -34,19 +34,57 @@ Then launch `nmf` again. The standard configuration and runtime state remain in
 overrides still apply; pass the same options when switching from a manual ZIP
 installation. Update any old shortcuts to use the Scoop installation.
 
+## nskkzime
+
+Install from a non-packaged PowerShell launched directly from Explorer or the
+Start menu, as the user who will manage the IME. A normal, unelevated window is
+sufficient. Installation stops before registration if it detects data
+virtualization, which can occur in a packaged application's terminal.
+
+```powershell
+scoop bucket add extras
+scoop install nekomimist/nskkzime
+```
+
+Scoop installs PowerShell 7 and the x64 and x86 Visual C++ runtimes as dependencies.
+Approve UAC as the same user. The IME is registered machine-wide and its binaries
+are copied to protected version directories under `%ProgramFiles%\nskkzime`.
+Scoop also retains the downloaded package under `package/`, separately from its
+own installation metadata. Use one managing user; global Scoop
+installation is unsupported. ARM64 Windows is unsupported.
+
+Open **nskkzime Settings** in the **Scoop Apps** Start menu folder and configure
+separately downloaded SKK dictionaries and a zenz model. Inference needs the CPU
+features listed in the upstream README. The package does not contain dictionaries,
+models, settings, or learned data.
+
+Close applications before `scoop update nskkzime`. Updating keeps the old IME
+registration until the new installer switches it, with recovery on registration
+failure. Applications using the old DLL need to be restarted, or sign out and
+back in. Scoop's package state and the IME's registration recovery are separate;
+see the packaged README for `Status` and `Recover` commands.
+
+`scoop uninstall nskkzime` unregisters the IME and removes this user's broker
+startup entry. Protected program files and user data are retained.
+Follow the upstream [complete removal instructions](https://github.com/nekomimist/nskkzime/blob/main/docs/PACKAGE_README.md#完全削除)
+if you want to delete them too. `scoop cleanup` only cleans Scoop's copies; it does
+not remove the protected IME version directories.
+
 ## Packages
 
 | Package | Application | Architectures |
 | --- | --- | --- |
 | `nmf` | [Nekomimist Filer](https://github.com/nekomimist/nmf) | x64, ARM64 |
+| `nskkzime` | [nskkzime](https://github.com/nekomimist/nskkzime) | native x64 (includes x86 IME DLL) |
 
-The complete upstream ZIP is installed, including `LICENSE`,
-`THIRD_PARTY_LICENSES.txt`, and the `licenses/` directory.
+Each package installs the complete upstream ZIP and its license notices.
+`nmf` includes `LICENSE`, `THIRD_PARTY_LICENSES.txt`, and `licenses/`;
+`nskkzime` includes `LICENSE` and `licenses/`.
 
 ## Maintenance
 
-`bucket/nmf.json` points to the current stable upstream release. The
-**Update manifests** workflow checks every four hours using Scoop's `checkver`
+`bucket/nmf.json` and `bucket/nskkzime.json` point to their current stable upstream
+releases. The **Update manifests** workflow checks every four hours using Scoop's `checkver`
 and `autoupdate` support, and commits updated versions, URLs, and SHA-256 hashes
 to `main`. Hashes come from the release's `.zip.sha256` files. Prereleases are
 excluded. No separate personal access token is needed; the workflow uses this
